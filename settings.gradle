@@ -1,2 +1,3 @@
+include ':weeklyCalendar'
 include ':app'
 rootProject.name = "WeeklySchedule"
