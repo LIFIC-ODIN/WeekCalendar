@@ -18,8 +18,8 @@ fun randomColor(): Int {
     return Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256))
 }
 
-//const val LIST_FORMAT = 6L        //일주일
-const val LIST_FORMAT = 2L          //3일
+const val LIST_FORMAT = 6L        //일주일
+//const val LIST_FORMAT = 2L          //3일
 
 
 const val weightStartTime = 1

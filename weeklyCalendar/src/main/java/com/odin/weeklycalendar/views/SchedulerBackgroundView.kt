@@ -7,9 +7,8 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.view.View
 import com.odin.weeklycalendar.util.DayOfWeekUtil
-import com.odin.weeklycalendar.util.Utils.toLocalString
-import com.odin.weeklycalendar.util.dpToPixelFloat
 import com.odin.weeklycalendar.util.dipToPixelInt
+import com.odin.weeklycalendar.util.dpToPixelFloat
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
@@ -21,10 +20,11 @@ import kotlin.math.roundToInt
 
 internal class SchedulerBackgroundView constructor(context: Context) : View(context) {
 
+    //오늘 백그라운드
     private val todayPaint: Paint by lazy {
         Paint().apply {
             strokeWidth = DIVIDER_WIDTH_PX.toFloat() * 2
-            color = Color.RED
+            color = Color.YELLOW
         }
     }
 
@@ -73,7 +73,7 @@ internal class SchedulerBackgroundView constructor(context: Context) : View(cont
             val y = topOffsetPx + context.dpToPixelFloat(offset.toMinutes() * scalingFactor)
             drawLine(0f, y, width.toFloat(), y, paintDivider)
 
-            val timeString = localTime.toLocalString()
+            val timeString = localTime.toString()
             drawMultiLineText(
                 this,
                 timeString,
@@ -96,13 +96,29 @@ internal class SchedulerBackgroundView constructor(context: Context) : View(cont
         paint: Paint
     ) {
         var currentY = initialY
+        paint.textAlign = Paint.Align.CENTER
+
+        val xPos = (canvas.width / 2).toFloat()
+        val yPos = (canvas.height / 2 - (paint.descent() + paint.ascent()) / 2)
+
         text.split(" ")
             .dropLastWhile(String::isEmpty)
             .forEach {
-                canvas.drawText(it, initialX, currentY, paint)
+                canvas.drawText(it, initialX, initialY, paint)
                 currentY += (-paint.ascent() + paint.descent()).toInt()
             }
     }
+
+    /*
+    *  Paint textPaint = new Paint();
+ textPaint.setTextAlign(Paint.Align.CENTER);
+
+ int xPos = (canvas.getWidth() / 2);
+ int yPos = (int) ((canvas.getHeight() / 2) - ((textPaint.descent() + textPaint.ascent()) / 2)) ;
+ //((textPaint.descent() + textPaint.ascent()) / 2) is the distance from the baseline to the center.
+
+ canvas.drawText("Hello", xPos, yPos, textPaint);
+    * */
 
 
     private fun Canvas.drawColumnsWithHeaders() {
@@ -129,11 +145,11 @@ internal class SchedulerBackgroundView constructor(context: Context) : View(cont
         drawRect(rect, todayPaint)
     }
 
+    // 요일
     private fun Canvas.drawWeekDayName(day: DayOfWeek, column: Int) {
-        val name = day.value
         val shortName = day.getDisplayName(TextStyle.SHORT, Locale.getDefault())
         val xLabel = (getColumnStart(column, false) + getColumnEnd(column, false)) / 2
-        drawText(shortName+"$name", xLabel.toFloat(), topOffsetPx / 2 + mPaintLabel.descent(), mPaintLabel)
+        drawText(shortName, xLabel.toFloat(), topOffsetPx / 2 + mPaintLabel.descent(), mPaintLabel)
     }
 
     fun getColumnStart(column: Int, considerDivider: Boolean): Int {
